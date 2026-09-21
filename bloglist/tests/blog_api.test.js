@@ -74,6 +74,21 @@ describe('addition of a new blog', () => {
     const titles = response.body.map(r => r.title)
     assert.ok(titles.includes('New Blog Title'))
   })
+  test('if likes property is missing, it defaults to 0', async () => {
+  const newBlogWithoutLikes = {
+    title: 'Blog without likes',
+    author: 'John Doe',
+    url: 'https://example.com/no-likes'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlogWithoutLikes)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.likes, 0)
+})
 })
 
 
