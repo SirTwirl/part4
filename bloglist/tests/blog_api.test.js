@@ -52,3 +52,28 @@ describe('when there is initially some blogs saved', () => {
 after(async () => {
   await mongoose.connection.close()
 })
+
+describe('addition of a new blog', () => {
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'New Blog Title',
+      author: 'New Blog Author',
+      url: 'https://newblog.com/',
+      likes: 0,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+    const titles = response.body.map(r => r.title)
+    assert.ok(titles.includes('New Blog Title'))
+  })
+})
+
+
