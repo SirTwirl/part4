@@ -89,6 +89,17 @@ describe('addition of a new blog', () => {
 
   assert.strictEqual(response.body.likes, 0)
 })
-})
+test('if title and url properties are missing, responds with 400 Bad Request', async () => {
+    const newBlogWithoutTitleAndUrl = {
+        title: '',
+        author: 'Jane Doe',
+        url: ''
+    }
 
+    await api
+        .post('/api/blogs')
+        .send(newBlogWithoutTitleAndUrl)
+        .expect(400)   
+})
+})
 
