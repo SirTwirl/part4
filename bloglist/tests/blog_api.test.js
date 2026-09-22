@@ -27,6 +27,9 @@ const initialBlogs = [
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(initialBlogs)
+  await User.deleteMany({})
+  const user = new User(helper.initialUsers[0])
+  await user.save()
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -49,10 +52,6 @@ describe('when there is initially some blogs saved', () => {
     assert.ok(BlogToVerify.id)
     assert.strictEqual(BlogToVerify._id, undefined)
   })
-})
-
-after(async () => {
-  await mongoose.connection.close()
 })
 
 describe('addition of a new blog', () => {
@@ -126,12 +125,6 @@ describe('updating a blog', () => {
       .send({ likes: blogToUpdate.likes + 1 })
       .expect(200)
   })
-})
-
-beforeEach(async () => {
-    await User.deleteMany({})
-    const user = new User(helper.initialUsers[0])
-    await user.save()
 })
 
 describe('when there is initially one user in db', () => {
@@ -217,4 +210,8 @@ describe('when there is initially one user in db', () => {
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
+})
+
+after(async () => {
+  await mongoose.connection.close()
 })
